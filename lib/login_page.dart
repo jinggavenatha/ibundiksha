@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
               ],
             ),
             Spacer(),
-            Text('copyright @2022 by Undiksha', style: TextStyle(fontSize: 12, color: Colors.grey)),
+            Text('copyright @2025 by Undiksha', style: TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),

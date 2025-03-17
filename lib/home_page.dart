@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage: AssetImage('assets/profile.png'), // Gambar profil
                 ),
-                title: Text('Nasabah'),
+                title: Text('Jingga Venatha'),
                 subtitle: Text('$username\nTotal Saldo Anda\nRp. 1.200.000'),
                 tileColor: Colors.blue[100],
               ),
@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 20),
             // Bantuan
             Text(
-              'Butuh Bantuan?\n0878-1234-1024',
+              'Butuh Bantuan?\n0858-8215-4786',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
