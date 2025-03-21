@@ -44,10 +44,26 @@ class LoginPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
               ),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage(username: usernameController.text)),
-                );
+                String username = usernameController.text.trim();
+                String password = passwordController.text.trim();
+
+                // Validasi username dan password
+                if (username.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Username dan password harus diisi!')),
+                  );
+                } else if (username == '2315091027' && password == '2315091027') {
+                  // Jika username dan password benar, masuk ke HomePage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage(username: username)),
+                  );
+                } else {
+                  // Jika username atau password salah, tampilkan pesan error
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Username atau password salah!')),
+                  );
+                }
               },
               child: Text('Login', style: TextStyle(fontSize: 18, color: Colors.white)),
             ),
