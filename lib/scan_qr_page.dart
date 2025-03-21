@@ -10,7 +10,7 @@ class ScanQRPage extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          "Fitur Scan QR akan segera hadir!",
+          "Fitur Scan QR belum bisa!",
           style: TextStyle(fontSize: 18),
         ),
       ),
