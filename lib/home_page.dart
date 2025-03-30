@@ -2,10 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:ibundiksha/login_page.dart';
 import 'package:ibundiksha/scan_qr_page.dart';
 
-
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String username;
   HomePage({required this.username});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  double saldo = 5000000; // Simpan saldo pengguna
+
+  void tarikDana() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController jumlahController = TextEditingController();
+        return AlertDialog(
+          title: Text("Tarik Dana"),
+          content: TextField(
+            controller: jumlahController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: "Masukkan jumlah"),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Batal"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            ElevatedButton(
+              child: Text("Tarik"),
+              onPressed: () {
+                double jumlah = double.tryParse(jumlahController.text) ?? 0;
+                if (jumlah <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Jumlah tidak valid!")),
+                  );
+                  return;
+                }
+                if (jumlah > saldo) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Saldo tidak cukup!")),
+                  );
+                  return;
+                }
+                setState(() {
+                  saldo -= jumlah;
+                });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Berhasil menarik Rp. ${jumlah.toStringAsFixed(2)}")),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,27 +83,25 @@ class HomePage extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Profil Nasabah
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/profile.png'), // Gambar profil
+                  backgroundImage: AssetImage('assets/profile.png'),
                 ),
-                title: Text('Jingga Venatha L', style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(widget.username, style: TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Total Saldo Anda', style: TextStyle(color: Colors.black54)),
-                    Text('Rp. 5.000.000', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text('Rp. ${saldo.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 tileColor: Colors.blue[100],
               ),
             ),
             SizedBox(height: 20),
-            // Grid Menu
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
@@ -63,20 +115,10 @@ class HomePage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            // Bantuan
-            Column(
-              children: [
-                Text(
-                  'Butuh Bantuan?',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                Text(
-                  '0858-8215-6789',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
-                ),
-                SizedBox(height: 10),
-                Icon(Icons.call, size: 40, color: Colors.blue),
-              ],
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: tarikDana,
+              child: Text("Tarik Dana", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -85,23 +127,9 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.blue,
         shape: CircleBorder(),
         onPressed: () {
-          // Navigasi ke halaman Scan QR (Buat halaman jika belum ada)
           Navigator.push(context, MaterialPageRoute(builder: (context) => ScanQRPage()));
         },
         child: Icon(Icons.qr_code_scanner, size: 40, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _bottomMenu(Icons.settings, 'Setting'),
-            SizedBox(width: 50), // Beri jarak untuk FAB (Scan QR)
-            _bottomMenu(Icons.person, 'Profile'),
-          ],
-        ),
       ),
     );
   }
@@ -113,17 +141,6 @@ class HomePage extends StatelessWidget {
         Icon(icon, size: 50, color: Colors.blue),
         SizedBox(height: 5),
         Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
-
-  Widget _bottomMenu(IconData icon, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 30, color: Colors.blue),
-        SizedBox(height: 5),
-        Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
       ],
     );
   }
