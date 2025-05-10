@@ -9,7 +9,9 @@ class DepositoPage extends StatefulWidget {
 
 class _DepositoPageState extends State<DepositoPage> {
   final TextEditingController jumlahController = TextEditingController();
-  final TextEditingController bungaController = TextEditingController(text: "5.0");
+  final TextEditingController bungaController = TextEditingController(
+    text: "5.0",
+  );
   final TextEditingController tenorController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -45,7 +47,10 @@ class _DepositoPageState extends State<DepositoPage> {
     final provider = Provider.of<AccountProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Deposito"), backgroundColor: Colors.blue[900]),
+      appBar: AppBar(
+        title: Text("Deposito"),
+        backgroundColor: Colors.blue[900],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -60,26 +65,41 @@ class _DepositoPageState extends State<DepositoPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(Icons.account_balance_wallet, color: Colors.blue[800]),
+                      Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.blue[800],
+                      ),
                       SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Saldo Tersedia", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                           Text(
-                            "Rp ${provider.saldo.toStringAsFixed(2)}", 
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                            "Saldo Tersedia",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            "Rp ${provider.saldo.toStringAsFixed(2)}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
-              
-              Text("Informasi Deposito", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+
+              Text(
+                "Informasi Deposito",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               SizedBox(height: 16),
-              
+
               // Jumlah Deposito
               TextFormField(
                 controller: jumlahController,
@@ -95,8 +115,14 @@ class _DepositoPageState extends State<DepositoPage> {
                     return 'Jumlah deposito tidak boleh kosong';
                   }
                   double? jumlah = double.tryParse(value);
-                  if (jumlah == null || jumlah <= 0) {
+                  if (jumlah == null) {
+                    return 'Masukkan angka yang benar';
+                  }
+                  if (jumlah <= 0) {
                     return 'Jumlah deposito harus lebih dari 0';
+                  }
+                  if (jumlah < 10000) {
+                    return 'Minimum deposito adalah Rp. 10.000';
                   }
                   if (jumlah > provider.saldo) {
                     return 'Saldo tidak mencukupi';
@@ -105,35 +131,39 @@ class _DepositoPageState extends State<DepositoPage> {
                 },
               ),
               SizedBox(height: 16),
-              
+
               // Tenor Selection
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pilih Jangka Waktu", style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  Text(
+                    "Pilih Jangka Waktu",
+                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  ),
                   SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: tenorOptions.map((tenor) {
-                      return ChoiceChip(
-                        label: Text("$tenor bulan"),
-                        selected: selectedTenor == tenor,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedTenor = tenor;
-                              tenorController.text = tenor.toString();
-                            });
-                          }
-                        },
-                      );
-                    }).toList(),
+                    children:
+                        tenorOptions.map((tenor) {
+                          return ChoiceChip(
+                            label: Text("$tenor bulan"),
+                            selected: selectedTenor == tenor,
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() {
+                                  selectedTenor = tenor;
+                                  tenorController.text = tenor.toString();
+                                });
+                              }
+                            },
+                          );
+                        }).toList(),
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16),
-              
+
               // Bunga
               TextFormField(
                 controller: bungaController,
@@ -155,14 +185,14 @@ class _DepositoPageState extends State<DepositoPage> {
                   return null;
                 },
               ),
-              
+
               SizedBox(height: 32),
-              
+
               // Perhitungan Bunga (informasi)
               _buildBungaSimulation(),
-              
+
               SizedBox(height: 32),
-              
+
               // Deposito Button
               SizedBox(
                 width: double.infinity,
@@ -172,14 +202,21 @@ class _DepositoPageState extends State<DepositoPage> {
                     backgroundColor: Colors.blue[900],
                     foregroundColor: Colors.white,
                   ),
-                  onPressed: isLoading ? null : () {
-                    if (_formKey.currentState!.validate()) {
-                      _showConfirmationDialog();
-                    }
-                  },
-                  child: isLoading 
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Buat Deposito", style: TextStyle(fontSize: 16)),
+                  onPressed:
+                      isLoading
+                          ? null
+                          : () {
+                            if (_formKey.currentState!.validate()) {
+                              _showConfirmationDialog();
+                            }
+                          },
+                  child:
+                      isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                            "Buat Deposito",
+                            style: TextStyle(fontSize: 16),
+                          ),
                 ),
               ),
             ],
@@ -206,7 +243,7 @@ class _DepositoPageState extends State<DepositoPage> {
     }
     double bungaNominal = pokok * (bunga / 100) * (selectedTenor / 12);
     double total = pokok + bungaNominal;
-    
+
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -214,14 +251,24 @@ class _DepositoPageState extends State<DepositoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Simulasi Deposito", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "Simulasi Deposito",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
             _detailRow("Pokok", "Rp ${pokok.toStringAsFixed(2)}"),
             _detailRow("Tenor", "$selectedTenor bulan"),
             _detailRow("Bunga", "$bunga% per tahun"),
-            _detailRow("Bunga diterima", "Rp ${bungaNominal.toStringAsFixed(2)}"),
+            _detailRow(
+              "Bunga diterima",
+              "Rp ${bungaNominal.toStringAsFixed(2)}",
+            ),
             Divider(),
-            _detailRow("Total saat jatuh tempo", "Rp ${total.toStringAsFixed(2)}", TextStyle(fontWeight: FontWeight.bold)),
+            _detailRow(
+              "Total saat jatuh tempo",
+              "Rp ${total.toStringAsFixed(2)}",
+              TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
@@ -246,44 +293,58 @@ class _DepositoPageState extends State<DepositoPage> {
     double bunga = double.tryParse(bungaController.text) ?? 0;
     double bungaNominal = jumlah * (bunga / 100) * (selectedTenor / 12);
     double total = jumlah + bungaNominal;
-    
+
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Konfirmasi Deposito"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Pastikan detail deposito sudah benar:"),
-            SizedBox(height: 16),
-            _detailRow("Jumlah Pokok", "Rp ${jumlah.toStringAsFixed(2)}"),
-            _detailRow("Tenor", "$selectedTenor bulan"),
-            _detailRow("Bunga", "$bunga% per tahun"),
-            _detailRow("Bunga diterima", "Rp ${bungaNominal.toStringAsFixed(2)}"),
-            Divider(),
-            _detailRow("Total saat jatuh tempo", "Rp ${total.toStringAsFixed(2)}", TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 16),
-            Text("Catatan: Dana akan dikunci selama $selectedTenor bulan.", style: TextStyle(color: Colors.red[700], fontStyle: FontStyle.italic)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Batal"),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[900],
+      builder:
+          (_) => AlertDialog(
+            title: Text("Konfirmasi Deposito"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Pastikan detail deposito sudah benar:"),
+                SizedBox(height: 16),
+                _detailRow("Jumlah Pokok", "Rp ${jumlah.toStringAsFixed(2)}"),
+                _detailRow("Tenor", "$selectedTenor bulan"),
+                _detailRow("Bunga", "$bunga% per tahun"),
+                _detailRow(
+                  "Bunga diterima",
+                  "Rp ${bungaNominal.toStringAsFixed(2)}",
+                ),
+                Divider(),
+                _detailRow(
+                  "Total saat jatuh tempo",
+                  "Rp ${total.toStringAsFixed(2)}",
+                  TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Catatan: Dana akan dikunci selama $selectedTenor bulan.",
+                  style: TextStyle(
+                    color: Colors.red[700],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              Navigator.pop(context);
-              _processDeposito();
-            },
-            child: Text("Konfirmasi"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Batal"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[900],
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _processDeposito();
+                },
+                child: Text("Konfirmasi"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -296,10 +357,12 @@ class _DepositoPageState extends State<DepositoPage> {
     Future.delayed(Duration(seconds: 1), () {
       double jumlah = double.tryParse(jumlahController.text) ?? 0;
       double bunga = double.tryParse(bungaController.text) ?? 0;
-      
+
       // Lakukan deposito
-      bool success = Provider.of<AccountProvider>(context, listen: false)
-          .deposito(jumlah, bunga, selectedTenor);
+      bool success = Provider.of<AccountProvider>(
+        context,
+        listen: false,
+      ).deposito(jumlah, bunga, selectedTenor);
 
       setState(() {
         isLoading = false;
@@ -317,66 +380,75 @@ class _DepositoPageState extends State<DepositoPage> {
     double bunga = double.tryParse(bungaController.text) ?? 0;
     double bungaNominal = jumlah * (bunga / 100) * (selectedTenor / 12);
     double total = jumlah + bungaNominal;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.green),
-            SizedBox(width: 8),
-            Text("Deposito Berhasil"),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Deposito sebesar Rp ${jumlah.toStringAsFixed(2)} berhasil dibuat"),
-            SizedBox(height: 8),
-            Text("Pada tanggal jatuh tempo, Anda akan menerima:"),
-            SizedBox(height: 4),
-            Text("Rp ${total.toStringAsFixed(2)}", style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 12),
-            Text("Transaksi telah dicatat dalam mutasi rekening Anda."),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[900],
+      builder:
+          (_) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green),
+                SizedBox(width: 8),
+                Text("Deposito Berhasil"),
+              ],
             ),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Kembali ke halaman utama
-            },
-            child: Text("Selesai"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Deposito sebesar Rp ${jumlah.toStringAsFixed(2)} berhasil dibuat",
+                ),
+                SizedBox(height: 8),
+                Text("Pada tanggal jatuh tempo, Anda akan menerima:"),
+                SizedBox(height: 4),
+                Text(
+                  "Rp ${total.toStringAsFixed(2)}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 12),
+                Text("Transaksi telah dicatat dalam mutasi rekening Anda."),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[900],
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context); // Kembali ke halaman utama
+                },
+                child: Text("Selesai"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _showErrorDialog() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 8),
-            Text("Deposito Gagal"),
-          ],
-        ),
-        content: Text("Saldo tidak mencukupi atau terjadi kesalahan sistem."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
+      builder:
+          (_) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.error, color: Colors.red),
+                SizedBox(width: 8),
+                Text("Deposito Gagal"),
+              ],
+            ),
+            content: Text(
+              "Saldo tidak mencukupi atau terjadi kesalahan sistem.",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }
