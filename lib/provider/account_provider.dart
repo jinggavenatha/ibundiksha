@@ -25,11 +25,14 @@ class AccountProvider with ChangeNotifier {
   bool transfer(double jumlah, String tujuan) {
     if (_saldo >= jumlah && jumlah > 0) {
       _saldo -= jumlah;
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.debit,
           amount: jumlah,
           description: "Transfer ke $tujuan",
-          date: DateTime.now()));
+          date: DateTime.now(),
+        ),
+      );
       notifyListeners();
       return true;
     }
@@ -40,11 +43,14 @@ class AccountProvider with ChangeNotifier {
   void tambahSaldo(double jumlah) {
     if (jumlah > 0) {
       _saldo += jumlah;
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.credit,
           amount: jumlah,
           description: "Setoran tunai",
-          date: DateTime.now()));
+          date: DateTime.now(),
+        ),
+      );
       notifyListeners();
     }
   }
@@ -56,17 +62,23 @@ class AccountProvider with ChangeNotifier {
 
       double bungaDeposito = jumlah * (bunga / 100) * (tenor / 12);
 
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.debit,
           amount: jumlah,
           description: "Pembuatan deposito $tenor bulan dengan bunga $bunga%",
-          date: DateTime.now()));
+          date: DateTime.now(),
+        ),
+      );
 
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.pending,
           amount: jumlah + bungaDeposito,
           description: "Jatuh tempo deposito (estimasi)",
-          date: DateTime.now().add(Duration(days: tenor * 30))));
+          date: DateTime.now().add(Duration(days: tenor * 30)),
+        ),
+      );
 
       notifyListeners();
       return true;
@@ -78,11 +90,14 @@ class AccountProvider with ChangeNotifier {
   bool bayarTagihan(String jenis, double jumlah) {
     if (_saldo >= jumlah && jumlah > 0) {
       _saldo -= jumlah;
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.debit,
           amount: jumlah,
           description: "Pembayaran $jenis",
-          date: DateTime.now()));
+          date: DateTime.now(),
+        ),
+      );
       notifyListeners();
       return true;
     }
@@ -92,11 +107,14 @@ class AccountProvider with ChangeNotifier {
   // Ajukan pinjaman (menyimpan status pending di transaksi)
   bool ajukanPinjaman(double jumlah, int tenor) {
     if (jumlah > 0) {
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.pending,
           amount: jumlah,
           description: "Pengajuan pinjaman tenor $tenor bulan",
-          date: DateTime.now()));
+          date: DateTime.now(),
+        ),
+      );
       notifyListeners();
       return true;
     }
@@ -107,11 +125,15 @@ class AccountProvider with ChangeNotifier {
   bool setujuiPinjaman(double jumlah) {
     if (jumlah > 0) {
       _saldo += jumlah;
-      _transactions.add(Transaction(
+      _transactions.add(
+        Transaction(
           type: TransactionType.credit,
           amount: jumlah,
-          description: "Pencairan pinjaman sebesar Rp ${jumlah.toStringAsFixed(0)}",
-          date: DateTime.now()));
+          description:
+              "Pencairan pinjaman sebesar Rp ${jumlah.toStringAsFixed(0)}",
+          date: DateTime.now(),
+        ),
+      );
       notifyListeners();
       return true;
     }
@@ -120,22 +142,28 @@ class AccountProvider with ChangeNotifier {
 
   // Tambah mutasi manual jika diperlukan
   void addMutasi(String deskripsi) {
-    _transactions.add(Transaction(
+    _transactions.add(
+      Transaction(
         type: TransactionType.other,
         amount: 0,
         description: deskripsi,
-        date: DateTime.now()));
+        date: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
   // Pencairan pinjaman (bisa diintegrasikan dengan setujuiPinjaman)
   bool pencairanPinjaman(double jumlah) {
     _saldo += jumlah;
-    _transactions.add(Transaction(
+    _transactions.add(
+      Transaction(
         type: TransactionType.credit,
         amount: jumlah,
         description: "Pencairan pinjaman",
-        date: DateTime.now()));
+        date: DateTime.now(),
+      ),
+    );
     notifyListeners();
     return true;
   }
@@ -146,7 +174,7 @@ enum TransactionType {
   credit, // Masuk saldo
   debit, // Keluar saldo
   pending, // Status tertunda (pengajuan)
-  other // Lain-lain
+  other, // Lain-lain
 }
 
 // Class data transaksi
