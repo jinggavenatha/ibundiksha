@@ -15,14 +15,27 @@ class _PinjamanPageState extends State<PinjamanPage> {
   bool isLoading = false;
   double bungaRate = 10.0; // Default bunga rate (%)
 
-  // Opsi tenor
-  final List<int> tenorOptions = [6, 12, 24, 36, 48, 60];
-  int selectedTenor = 12; // Default tenor
+  // Opsi tenor diperbarui sesuai permintaan
+  final List<int> tenorOptions = [1, 3, 6, 12, 24];
+  int selectedTenor = 3; // Default tenor diubah ke 3 bulan
 
   @override
   void initState() {
     super.initState();
     tenorController.text = selectedTenor.toString();
+    jumlahController.addListener(() {
+      setState(() {
+        // Memperbarui UI saat input jumlah berubah
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    jumlahController.dispose();
+    tenorController.dispose();
+    tujuanController.dispose();
+    super.dispose();
   }
 
   @override
@@ -221,6 +234,19 @@ class _PinjamanPageState extends State<PinjamanPage> {
 
   Widget _buildPinjamanSimulation() {
     double pokok = double.tryParse(jumlahController.text) ?? 0;
+    if (pokok <= 0) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            "Masukkan jumlah pinjaman yang valid untuk melihat simulasi.",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ),
+      );
+    }
+
     double bungaPerTahun = bungaRate / 100;
     double bungaTotal = pokok * bungaPerTahun * (selectedTenor / 12);
     double total = pokok + bungaTotal;
@@ -240,11 +266,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
             _detailRow("Bunga", "$bungaRate% per tahun"),
             _detailRow("Total Bunga", "Rp ${bungaTotal.toStringAsFixed(0)}"),
             Divider(),
-            _detailRow(
-                "Total Pengembalian", "Rp ${total.toStringAsFixed(0)}",
+            _detailRow("Total Pengembalian", "Rp ${total.toStringAsFixed(0)}",
                 TextStyle(fontWeight: FontWeight.bold)),
-            _detailRow(
-                "Angsuran per Bulan", "Rp ${angsuranPerBulan.toStringAsFixed(0)}",
+            _detailRow("Angsuran per Bulan", "Rp ${angsuranPerBulan.toStringAsFixed(0)}",
                 TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800])),
           ],
         ),
@@ -325,7 +349,7 @@ class _PinjamanPageState extends State<PinjamanPage> {
       // Process loan application
       provider.ajukanPinjaman(jumlah, selectedTenor);
 
-      // Simulasi persetujuan pinjaman (bisa dihilangkan jika pengajuan dan persetujuan berbeda proses)
+      // Simulasi persetujuan pinjaman (langsung disetujui untuk contoh ini)
       provider.setujuiPinjaman(jumlah);
 
       setState(() {

@@ -13,7 +13,7 @@ class _DepositoPageState extends State<DepositoPage> {
   final TextEditingController tenorController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  
+
   // Pilihan tenor
   final List<int> tenorOptions = [1, 3, 6, 12, 24];
   int selectedTenor = 6; // Default tenor
@@ -22,12 +22,28 @@ class _DepositoPageState extends State<DepositoPage> {
   void initState() {
     super.initState();
     tenorController.text = selectedTenor.toString();
+
+    // Listener untuk memperbarui simulasi saat jumlah atau bunga berubah
+    jumlahController.addListener(() {
+      setState(() {});
+    });
+    bungaController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    jumlahController.dispose();
+    bungaController.dispose();
+    tenorController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AccountProvider>(context);
-    
+
     return Scaffold(
       appBar: AppBar(title: Text("Deposito"), backgroundColor: Colors.blue[900]),
       body: SingleChildScrollView(
@@ -176,6 +192,18 @@ class _DepositoPageState extends State<DepositoPage> {
   Widget _buildBungaSimulation() {
     double pokok = double.tryParse(jumlahController.text) ?? 0;
     double bunga = double.tryParse(bungaController.text) ?? 0;
+    if (pokok <= 0 || bunga <= 0) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            "Masukkan jumlah dan bunga yang valid untuk melihat simulasi.",
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ),
+      );
+    }
     double bungaNominal = pokok * (bunga / 100) * (selectedTenor / 12);
     double total = pokok + bungaNominal;
     
