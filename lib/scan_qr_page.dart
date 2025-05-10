@@ -6,7 +6,7 @@ class ScanQRPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Scan QR Code"),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue[900],
       ),
       body: Center(
         child: Text(

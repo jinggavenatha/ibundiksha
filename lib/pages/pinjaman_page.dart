@@ -80,7 +80,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16)),
-                              Text("No. Anggota: 1234567890",
+                              Text("No. Anggota: 2315091027",
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text("No. Rekening: 1234567890",
                                   style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),

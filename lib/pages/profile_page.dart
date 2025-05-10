@@ -70,7 +70,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-                  _buildInfoItem('No. Rekening', '123456789'),
+                  _buildInfoItem('No. Rekening', '1234567890'),
                   _buildInfoItem('Jenis Keanggotaan', 'Silver'),
                   _buildInfoItem('Tanggal Bergabung', '01 Januari 2022'),
                   _buildInfoItem('Status', 'Aktif'),
