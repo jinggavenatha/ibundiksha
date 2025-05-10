@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
               Text(
-                "copyright @2022 by Undiksha",
+                "Copyright @2022 by Undiksha",
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
               SizedBox(height: 20),

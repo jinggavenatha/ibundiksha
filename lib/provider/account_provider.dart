@@ -2,7 +2,15 @@ import 'package:flutter/foundation.dart';
 
 class AccountProvider with ChangeNotifier {
   double _saldo = 1200000.00;
-  List<Transaction> _transactions = [];
+  List<Transaction> _transactions = [
+    // Adding some initial transactions for testing
+    Transaction(
+      type: TransactionType.credit,
+      amount: 1200000.00,
+      description: "Saldo awal",
+      date: DateTime.now().subtract(Duration(days: 5)),
+    ),
+  ];
 
   // Getter untuk saldo dan mutasi
   double get saldo => _saldo;
@@ -21,7 +29,7 @@ class AccountProvider with ChangeNotifier {
         Transaction(
           type: TransactionType.debit,
           amount: jumlah,
-          description: "Transfer Rp${jumlah.toStringAsFixed(2)} ke $tujuan",
+          description: "Transfer ke $tujuan",
           date: DateTime.now(),
         )
       );
@@ -39,7 +47,7 @@ class AccountProvider with ChangeNotifier {
         Transaction(
           type: TransactionType.credit,
           amount: jumlah,
-          description: "Setor Rp${jumlah.toStringAsFixed(2)}",
+          description: "Setoran tunai",
           date: DateTime.now(),
         )
       );
@@ -61,7 +69,7 @@ class AccountProvider with ChangeNotifier {
         Transaction(
           type: TransactionType.debit,
           amount: jumlah,
-          description: "Deposito Rp${jumlah.toStringAsFixed(2)} tenor $tenor bulan dengan bunga $bunga%",
+          description: "Pembuatan deposito $tenor bulan dengan bunga $bunga%",
           date: DateTime.now(),
         )
       );
@@ -73,7 +81,7 @@ class AccountProvider with ChangeNotifier {
         Transaction(
           type: TransactionType.pending,
           amount: totalReturn,
-          description: "Jatuh tempo deposito: Rp${jumlah.toStringAsFixed(2)} + Bunga Rp${bungaDeposito.toStringAsFixed(2)} = Rp${totalReturn.toStringAsFixed(2)}",
+          description: "Jatuh tempo deposito (estimasi)",
           date: DateTime.now().add(Duration(days: tenor * 30)), // Simulasi jatuh tempo
         )
       );
@@ -92,7 +100,7 @@ class AccountProvider with ChangeNotifier {
         Transaction(
           type: TransactionType.debit,
           amount: jumlah,
-          description: "Pembayaran $jenis Rp${jumlah.toStringAsFixed(2)}",
+          description: "Pembayaran $jenis",
           date: DateTime.now(),
         )
       );
@@ -103,18 +111,20 @@ class AccountProvider with ChangeNotifier {
   }
   
   // Metode untuk pengajuan pinjaman
-  void ajukanPinjaman(double jumlah, int tenor) {
+  bool ajukanPinjaman(double jumlah, int tenor) {
     if (jumlah > 0) {
       _transactions.add(
         Transaction(
           type: TransactionType.pending,
           amount: jumlah,
-          description: "Pengajuan pinjaman Rp${jumlah.toStringAsFixed(2)} tenor $tenor bulan",
+          description: "Pengajuan pinjaman tenor $tenor bulan",
           date: DateTime.now(),
         )
       );
       notifyListeners();
+      return true;
     }
+    return false;
   }
 
   // Metode untuk menambahkan mutasi secara manual
@@ -128,6 +138,21 @@ class AccountProvider with ChangeNotifier {
       )
     );
     notifyListeners();
+  }
+  
+  // Metode untuk menambahkan pencairan pinjaman 
+  bool pencairanPinjaman(double jumlah) {
+    _saldo += jumlah;
+    _transactions.add(
+      Transaction(
+        type: TransactionType.credit,
+        amount: jumlah,
+        description: "Pencairan pinjaman",
+        date: DateTime.now(),
+      )
+    );
+    notifyListeners();
+    return true;
   }
 }
 
