@@ -5,10 +5,7 @@ import 'provider/account_provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AccountProvider(),
-      child: MyApp(),
-    ),
+    ChangeNotifierProvider(create: (_) => AccountProvider(), child: MyApp()),
   );
 }
 
@@ -18,9 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Mobile Banking Undiksha',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: LoginPage(),
     );
   }
