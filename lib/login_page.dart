@@ -12,6 +12,10 @@ class _LoginScreenState extends State<LoginPage> {
 
   bool _obscurePassword = true;
 
+  // Data login statis (simulasi database lokal)
+  final String validUsername = "jingga";
+  final String validPassword = "12345";
+
   void _login() {
     String username = usernameController.text.trim();
     String password = passwordController.text;
@@ -31,10 +35,28 @@ class _LoginScreenState extends State<LoginPage> {
               ],
             ),
       );
-    } else {
-      Navigator.push(
+    } else if (username == validUsername && password == validPassword) {
+      // Login berhasil
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
+        (route) => false, // Hapus semua rute sebelumnya dari stack
+      );
+    } else {
+      // Login gagal
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text("Login Gagal"),
+              content: Text("Username atau Password salah."),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("OK"),
+                ),
+              ],
+            ),
       );
     }
   }

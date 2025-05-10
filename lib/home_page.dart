@@ -17,18 +17,20 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        title: Text('Koperasi Undiksha'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
+  automaticallyImplyLeading: false, // <- Tambahkan baris ini
+  backgroundColor: Colors.blue[900],
+  title: Text('Koperasi Undiksha'),
+  centerTitle: true,
+  actions: [
+    IconButton(
+      icon: Icon(Icons.logout),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+  ],
+),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
