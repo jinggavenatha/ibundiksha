@@ -8,6 +8,9 @@ import 'package:ibundiksha/pages/pinjaman_page.dart';
 import 'package:ibundiksha/pages/mutasi_page.dart';
 import 'package:ibundiksha/scan_qr_page.dart';
 import 'package:ibundiksha/provider/account_provider.dart';
+import 'package:ibundiksha/pages/settings_page.dart';
+import 'package:ibundiksha/pages/profile_page.dart';
+import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -17,20 +20,22 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-  automaticallyImplyLeading: false, // <- Tambahkan baris ini
-  backgroundColor: Colors.blue[900],
-  title: Text('Koperasi Undiksha'),
-  centerTitle: true,
-  actions: [
-    IconButton(
-      icon: Icon(Icons.logout),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
-  ],
-),
-
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.blue[900],
+        title: Text('Koperasi Undiksha'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false,
+              );
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -38,7 +43,9 @@ class HomePage extends StatelessWidget {
             // Profile + Saldo
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Row(
@@ -52,11 +59,23 @@ class HomePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Nasabah", style: TextStyle(color: Colors.grey[700])),
-                          Text("Jingga Venatha Lisdabrani", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          Text(
+                            "Nasabah",
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                          Text(
+                            "Jingga Venatha Lisdabrani",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(height: 6),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.blue[100],
                               borderRadius: BorderRadius.circular(8),
@@ -64,14 +83,26 @@ class HomePage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Total Saldo Anda", style: TextStyle(fontSize: 12, color: Colors.grey[800])),
-                                Text("Rp. ${saldo.toStringAsFixed(2)}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                Text(
+                                  "Total Saldo Anda",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                                Text(
+                                  "Rp. ${saldo.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -82,7 +113,9 @@ class HomePage extends StatelessWidget {
             // Menu Grid
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: GridView.count(
@@ -92,12 +125,37 @@ class HomePage extends StatelessWidget {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                   children: [
-                    _menuItem(context, Icons.account_balance_wallet, 'Cek Saldo', CekSaldoPage()),
+                    _menuItem(
+                      context,
+                      Icons.account_balance_wallet,
+                      'Cek Saldo',
+                      CekSaldoPage(),
+                    ),
                     _menuItem(context, Icons.send, 'Transfer', TransferPage()),
-                    _menuItem(context, Icons.savings, 'Deposito', DepositoPage()),
-                    _menuItem(context, Icons.payment, 'Pembayaran', PembayaranPage()),
-                    _menuItem(context, Icons.attach_money, 'Pinjaman', PinjamanPage()),
-                    _menuItem(context, Icons.receipt_long, 'Mutasi', MutasiPage()),
+                    _menuItem(
+                      context,
+                      Icons.savings,
+                      'Deposito',
+                      DepositoPage(),
+                    ),
+                    _menuItem(
+                      context,
+                      Icons.payment,
+                      'Pembayaran',
+                      PembayaranPage(),
+                    ),
+                    _menuItem(
+                      context,
+                      Icons.attach_money,
+                      'Pinjaman',
+                      PinjamanPage(),
+                    ),
+                    _menuItem(
+                      context,
+                      Icons.receipt_long,
+                      'Mutasi',
+                      MutasiPage(),
+                    ),
                   ],
                 ),
               ),
@@ -116,14 +174,23 @@ class HomePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Butuh Bantuan?", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    "Butuh Bantuan?",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Row(
                     children: [
-                      Text("0858-1234-5678", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(
+                        "0858-1234-5678",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                       SizedBox(width: 8),
                       Icon(Icons.phone, color: Colors.blue[800]),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -136,7 +203,12 @@ class HomePage extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(Icons.settings, size: 32, color: Colors.blue[800]),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => SettingsPage()),
+                    );
+                  },
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -145,23 +217,40 @@ class HomePage extends StatelessWidget {
                     backgroundColor: Colors.blue[800],
                   ),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => ScanQRPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ScanQRPage()),
+                    );
                   },
-                  child: Icon(Icons.qr_code_scanner, size: 32, color: Colors.white),
+                  child: Icon(
+                    Icons.qr_code_scanner,
+                    size: 32,
+                    color: Colors.white,
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.person, size: 32, color: Colors.blue[800]),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ProfilePage()),
+                    );
+                  },
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _menuItem(BuildContext context, IconData icon, String label, Widget page) {
+  Widget _menuItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget page,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) => page));
@@ -171,7 +260,11 @@ class HomePage extends StatelessWidget {
         children: [
           Icon(icon, size: 40, color: Colors.blue[800]),
           SizedBox(height: 8),
-          Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
