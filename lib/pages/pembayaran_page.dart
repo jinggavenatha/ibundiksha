@@ -8,27 +8,29 @@ class PembayaranPage extends StatefulWidget {
 }
 
 class _PembayaranPageState extends State<PembayaranPage> {
+  final List<Map<String, dynamic>> tagihan = [
+    {"nama": "Listrik", "icon": Icons.lightbulb, "color": Colors.yellow[700]},
+    {"nama": "Air", "icon": Icons.water_drop, "color": Colors.blue[400]},
+    {"nama": "BPJS", "icon": Icons.health_and_safety, "color": Colors.red[400]},
+    {"nama": "Internet", "icon": Icons.wifi, "color": Colors.purple[400]},
+    {"nama": "Telepon", "icon": Icons.phone, "color": Colors.green[400]},
+    {"nama": "Pendidikan", "icon": Icons.school, "color": Colors.orange[400]},
+  ];
+
   final TextEditingController nomorController = TextEditingController();
-  final TextEditingController nominalController = TextEditingController();
+  final TextEditingController jumlahController = TextEditingController();
   String? selectedTagihan;
   bool isLoading = false;
-  final _formKey = GlobalKey<FormState>();
-
-  final List<Map<String, dynamic>> tagihan = [
-    {"name": "Listrik", "icon": Icons.lightbulb_outline, "color": Colors.yellow[700]},
-    {"name": "Air", "icon": Icons.water_drop_outlined, "color": Colors.blue[500]},
-    {"name": "BPJS", "icon": Icons.medical_services_outlined, "color": Colors.red[400]},
-    {"name": "Internet", "icon": Icons.wifi, "color": Colors.green[600]},
-    {"name": "Telepon", "icon": Icons.phone_outlined, "color": Colors.orange[700]},
-    {"name": "PDAM", "icon": Icons.water, "color": Colors.blue[700]},
-  ];
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AccountProvider>(context);
     
     return Scaffold(
-      appBar: AppBar(title: Text("Pembayaran"), backgroundColor: Colors.blue[900]),
+      appBar: AppBar(
+        title: Text("Pembayaran"), 
+        backgroundColor: Colors.blue[900]
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -46,9 +48,9 @@ class _PembayaranPageState extends State<PembayaranPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Saldo Anda", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                        Text("Saldo Tersedia", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                         Text(
-                          "Rp ${provider.saldo.toStringAsFixed(0)}", 
+                          "Rp ${provider.saldo.toStringAsFixed(2)}", 
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
                         ),
                       ],
@@ -58,162 +60,138 @@ class _PembayaranPageState extends State<PembayaranPage> {
               ),
             ),
             
-            // Tagihan Selection
             Text("Pilih Jenis Tagihan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             SizedBox(height: 16),
             
-            // Grid for tagihan types
+            // Tagihan Grid
             GridView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: 1.1,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
+                childAspectRatio: 1,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
               ),
               itemCount: tagihan.length,
               itemBuilder: (context, index) {
-                return _buildTagihanItem(tagihan[index]);
+                final item = tagihan[index];
+                final isSelected = selectedTagihan == item["nama"];
+                
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedTagihan = item["nama"];
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.blue[50] : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected ? Colors.blue[800]! : Colors.grey[300]!,
+                        width: isSelected ? 2 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          item["icon"], 
+                          size: 32, 
+                          color: item["color"],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          item["nama"],
+                          style: TextStyle(
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
             ),
             
             SizedBox(height: 24),
             
-            // Only show form if a tagihan is selected
-            if (selectedTagihan != null) _buildPaymentForm(provider),
+            // Form input if tagihan is selected
+            if (selectedTagihan != null) ...[
+              Text("Detail Pembayaran", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              SizedBox(height: 16),
+              
+              TextField(
+                controller: nomorController,
+                decoration: InputDecoration(
+                  labelText: "Nomor $selectedTagihan",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.confirmation_number),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              
+              SizedBox(height: 16),
+              
+              TextField(
+                controller: jumlahController,
+                decoration: InputDecoration(
+                  labelText: "Jumlah Tagihan (Rp)",
+                  border: OutlineInputBorder(),
+                  prefixText: "Rp ",
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              
+              SizedBox(height: 24),
+              
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[900],
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: isLoading ? null : () {
+                    if (nomorController.text.isEmpty || jumlahController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Semua field harus diisi"))
+                      );
+                      return;
+                    }
+                    
+                    double? jumlah = double.tryParse(jumlahController.text);
+                    if (jumlah == null || jumlah <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Jumlah tagihan tidak valid"))
+                      );
+                      return;
+                    }
+                    
+                    if (jumlah > provider.saldo) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Saldo tidak mencukupi"))
+                      );
+                      return;
+                    }
+                    
+                    _showConfirmationDialog(jumlah);
+                  },
+                  child: isLoading 
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Bayar Sekarang", style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
   
-  Widget _buildTagihanItem(Map<String, dynamic> item) {
-    final bool isSelected = selectedTagihan == item["name"];
-    
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTagihan = item["name"];
-          // Reset form when changing tagihan type
-          nomorController.clear();
-          nominalController.clear();
-        });
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.withOpacity(0.3),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              item["icon"] as IconData, 
-              size: 32, 
-              color: item["color"] as Color,
-            ),
-            SizedBox(height: 8),
-            Text(
-              item["name"] as String, 
-              style: TextStyle(
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-  Widget _buildPaymentForm(AccountProvider provider) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Detail Pembayaran $selectedTagihan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          SizedBox(height: 16),
-          
-          // Nomor Pelanggan
-          TextFormField(
-            controller: nomorController,
-            decoration: InputDecoration(
-              labelText: "Nomor ID Pelanggan",
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.numbers),
-            ),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Nomor ID pelanggan tidak boleh kosong';
-              }
-              if (value.length < 5) {
-                return 'Nomor ID pelanggan tidak valid';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 16),
-          
-          // Nominal
-          TextFormField(
-            controller: nominalController,
-            decoration: InputDecoration(
-              labelText: "Nominal Pembayaran",
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.attach_money),
-              prefixText: "Rp ",
-            ),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Nominal tidak boleh kosong';
-              }
-              double? nominal = double.tryParse(value);
-              if (nominal == null || nominal <= 0) {
-                return 'Nominal harus lebih dari 0';
-              }
-              if (nominal > provider.saldo) {
-                return 'Saldo tidak mencukupi';
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 32),
-          
-          // Bayar Button
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[900],
-                foregroundColor: Colors.white,
-              ),
-              onPressed: isLoading ? null : () {
-                if (_formKey.currentState!.validate()) {
-                  _showConfirmationDialog(provider);
-                }
-              },
-              child: isLoading 
-                ? CircularProgressIndicator(color: Colors.white)
-                : Text("Bayar Sekarang", style: TextStyle(fontSize: 16)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showConfirmationDialog(AccountProvider provider) {
-    double nominal = double.tryParse(nominalController.text) ?? 0;
-    String nomorID = nomorController.text;
-    
+  void _showConfirmationDialog(double jumlah) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -225,8 +203,8 @@ class _PembayaranPageState extends State<PembayaranPage> {
             Text("Pastikan detail pembayaran sudah benar:"),
             SizedBox(height: 16),
             _detailRow("Jenis Tagihan", selectedTagihan!),
-            _detailRow("ID Pelanggan", nomorID),
-            _detailRow("Nominal", "Rp ${nominal.toStringAsFixed(0)}"),
+            _detailRow("Nomor", nomorController.text),
+            _detailRow("Jumlah", "Rp ${jumlah.toStringAsFixed(2)}"),
           ],
         ),
         actions: [
@@ -240,7 +218,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              _processPembayaran(provider);
+              _processPembayaran(jumlah);
             },
             child: Text("Konfirmasi"),
           ),
@@ -248,7 +226,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
       ),
     );
   }
-
+  
   Widget _detailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -266,36 +244,33 @@ class _PembayaranPageState extends State<PembayaranPage> {
       ),
     );
   }
-
-  void _processPembayaran(AccountProvider provider) {
+  
+  void _processPembayaran(double jumlah) {
     setState(() {
       isLoading = true;
     });
 
-    // Simulate backend process
+    // Simulasi proses backend
     Future.delayed(Duration(seconds: 1), () {
-      double nominal = double.tryParse(nominalController.text) ?? 0;
-      String nomorID = nomorController.text;
+      final nomor = nomorController.text;
       
-      // Process payment
-      bool success = provider.bayarTagihan(
-        "$selectedTagihan ($nomorID)", 
-        nominal
-      );
+      // Lakukan pembayaran
+      bool success = Provider.of<AccountProvider>(context, listen: false)
+          .bayarTagihan("$selectedTagihan ($nomor)", jumlah);
 
       setState(() {
         isLoading = false;
       });
 
       if (success) {
-        _showSuccessDialog(nominal);
+        _showSuccessDialog(jumlah);
       } else {
         _showErrorDialog();
       }
     });
   }
-
-  void _showSuccessDialog(double nominal) {
+  
+  void _showSuccessDialog(double jumlah) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -311,7 +286,10 @@ class _PembayaranPageState extends State<PembayaranPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Pembayaran $selectedTagihan sebesar Rp ${nominal.toStringAsFixed(0)} berhasil dilakukan."),
+            Text("$selectedTagihan berhasil dibayar"),
+            SizedBox(height: 8),
+            Text("Nomor: ${nomorController.text}"),
+            Text("Jumlah: Rp ${jumlah.toStringAsFixed(2)}"),
             SizedBox(height: 12),
             Text("Transaksi telah dicatat dalam mutasi rekening Anda."),
           ],
@@ -323,7 +301,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context); // Return to main page
+              Navigator.pop(context); // Kembali ke halaman utama
             },
             child: Text("Selesai"),
           ),
@@ -331,7 +309,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
       ),
     );
   }
-
+  
   void _showErrorDialog() {
     showDialog(
       context: context,

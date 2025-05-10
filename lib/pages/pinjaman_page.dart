@@ -28,9 +28,12 @@ class _PinjamanPageState extends State<PinjamanPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AccountProvider>(context);
-    
+
     return Scaffold(
-      appBar: AppBar(title: Text("Pengajuan Pinjaman"), backgroundColor: Colors.blue[900]),
+      appBar: AppBar(
+        title: Text("Pengajuan Pinjaman"),
+        backgroundColor: Colors.blue[900],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -46,7 +49,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Data Peminjam", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text("Data Peminjam",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
                       SizedBox(height: 12),
                       Row(
                         children: [
@@ -58,8 +63,12 @@ class _PinjamanPageState extends State<PinjamanPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Jingga Venatha Lisdabrani", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text("No. Anggota: 1234567890", style: TextStyle(color: Colors.grey[600])),
+                              Text("Jingga Venatha Lisdabrani",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
+                              Text("No. Anggota: 1234567890",
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ],
@@ -68,10 +77,12 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   ),
                 ),
               ),
-              
-              Text("Informasi Pinjaman", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+
+              Text("Informasi Pinjaman",
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               SizedBox(height: 16),
-              
+
               // Jumlah Pinjaman
               TextFormField(
                 controller: jumlahController,
@@ -100,12 +111,13 @@ class _PinjamanPageState extends State<PinjamanPage> {
                 },
               ),
               SizedBox(height: 16),
-              
+
               // Tenor Selection
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Pilih Jangka Waktu", style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                  Text("Pilih Jangka Waktu",
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700])),
                   SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -126,9 +138,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   ),
                 ],
               ),
-              
+
               SizedBox(height: 16),
-              
+
               // Tujuan Pinjaman
               TextFormField(
                 controller: tujuanController,
@@ -144,14 +156,14 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   return null;
                 },
               ),
-              
+
               SizedBox(height: 32),
-              
+
               // Perhitungan Bunga (informasi)
               _buildPinjamanSimulation(),
-              
+
               SizedBox(height: 24),
-              
+
               // Disclaimer
               Container(
                 padding: EdgeInsets.all(12),
@@ -165,7 +177,8 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   children: [
                     Text(
                       "Catatan Penting:",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[800]),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.orange[800]),
                     ),
                     SizedBox(height: 4),
                     Text(
@@ -175,9 +188,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
                   ],
                 ),
               ),
-              
+
               SizedBox(height: 32),
-              
+
               // Ajukan Button
               SizedBox(
                 width: double.infinity,
@@ -187,14 +200,16 @@ class _PinjamanPageState extends State<PinjamanPage> {
                     backgroundColor: Colors.blue[900],
                     foregroundColor: Colors.white,
                   ),
-                  onPressed: isLoading ? null : () {
-                    if (_formKey.currentState!.validate()) {
-                      _showConfirmationDialog(provider);
-                    }
-                  },
-                  child: isLoading 
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Ajukan Pinjaman", style: TextStyle(fontSize: 16)),
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          if (_formKey.currentState!.validate()) {
+                            _showConfirmationDialog(provider);
+                          }
+                        },
+                  child: isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Ajukan Pinjaman", style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],
@@ -210,7 +225,7 @@ class _PinjamanPageState extends State<PinjamanPage> {
     double bungaTotal = pokok * bungaPerTahun * (selectedTenor / 12);
     double total = pokok + bungaTotal;
     double angsuranPerBulan = total / selectedTenor;
-    
+
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -225,8 +240,12 @@ class _PinjamanPageState extends State<PinjamanPage> {
             _detailRow("Bunga", "$bungaRate% per tahun"),
             _detailRow("Total Bunga", "Rp ${bungaTotal.toStringAsFixed(0)}"),
             Divider(),
-            _detailRow("Total Pengembalian", "Rp ${total.toStringAsFixed(0)}", TextStyle(fontWeight: FontWeight.bold)),
-            _detailRow("Angsuran per Bulan", "Rp ${angsuranPerBulan.toStringAsFixed(0)}", TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800])),
+            _detailRow(
+                "Total Pengembalian", "Rp ${total.toStringAsFixed(0)}",
+                TextStyle(fontWeight: FontWeight.bold)),
+            _detailRow(
+                "Angsuran per Bulan", "Rp ${angsuranPerBulan.toStringAsFixed(0)}",
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800])),
           ],
         ),
       ),
@@ -252,7 +271,7 @@ class _PinjamanPageState extends State<PinjamanPage> {
     double bungaTotal = jumlah * (bungaRate / 100) * (selectedTenor / 12);
     double total = jumlah + bungaTotal;
     double angsuranPerBulan = total / selectedTenor;
-    
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -268,7 +287,10 @@ class _PinjamanPageState extends State<PinjamanPage> {
             _detailRow("Tujuan", tujuan),
             _detailRow("Angsuran/Bulan", "Rp ${angsuranPerBulan.toStringAsFixed(0)}"),
             SizedBox(height: 16),
-            Text("Dengan mengajukan pinjaman ini, Anda setuju dengan ketentuan yang berlaku.", style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+            Text(
+              "Dengan mengajukan pinjaman ini, Anda setuju dengan ketentuan yang berlaku.",
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),
           ],
         ),
         actions: [
@@ -299,10 +321,12 @@ class _PinjamanPageState extends State<PinjamanPage> {
     // Simulate backend process
     Future.delayed(Duration(seconds: 1), () {
       double jumlah = double.tryParse(jumlahController.text) ?? 0;
-      String tujuan = tujuanController.text;
-      
+
       // Process loan application
       provider.ajukanPinjaman(jumlah, selectedTenor);
+
+      // Simulasi persetujuan pinjaman (bisa dihilangkan jika pengajuan dan persetujuan berbeda proses)
+      provider.setujuiPinjaman(jumlah);
 
       setState(() {
         isLoading = false;
@@ -330,7 +354,9 @@ class _PinjamanPageState extends State<PinjamanPage> {
           children: [
             Text("Pengajuan pinjaman sebesar Rp ${jumlah.toStringAsFixed(0)} telah diterima."),
             SizedBox(height: 12),
-            Text("Kami akan meninjau pengajuan Anda dalam waktu 1-3 hari kerja. Status pengajuan dapat Anda lihat di halaman mutasi."),
+            Text(
+              "Kami akan meninjau pengajuan Anda dalam waktu 1-3 hari kerja. Status pengajuan dapat Anda lihat di halaman mutasi.",
+            ),
           ],
         ),
         actions: [
