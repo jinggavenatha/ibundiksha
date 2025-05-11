@@ -167,23 +167,16 @@ class _DepositoPageState extends State<DepositoPage> {
               // Bunga
               TextFormField(
                 controller: bungaController,
+                readOnly: true,
                 decoration: InputDecoration(
                   labelText: "Bunga (%)",
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.percent),
                   suffixText: "% per tahun",
+                  filled: true,
+                  fillColor: Colors.grey[200],
                 ),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Bunga tidak boleh kosong';
-                  }
-                  double? bunga = double.tryParse(value);
-                  if (bunga == null || bunga <= 0) {
-                    return 'Bunga harus lebih dari 0';
-                  }
-                  return null;
-                },
               ),
 
               SizedBox(height: 32),
